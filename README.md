@@ -1,6 +1,6 @@
 # BPick
 
-Very fast buffer switcher for Vim
+Very fast buffer switcher for Vim.
 
 ## Install
 ### vim-plug
@@ -9,6 +9,8 @@ Plug 'nonrice/bpick
 ```
 
 ## Usage
+Ideally you would bind the below commands to a keymap:
+
 ### `:BPick`
 Type a number to instantly switch to the buffer.
 
