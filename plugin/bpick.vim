@@ -103,7 +103,6 @@ function! s:BPickAutoFill()
     let l:cur_buf_nr = str2nr(expand('<abuf>'))
 
     if s:is_special_buf(cur_buf_nr)
-        echo "Invalid buffer type."
         return
     endif
 
