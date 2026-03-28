@@ -10,6 +10,10 @@ Plug 'nonrice/bpick'
 
 ## Usage
 
+Opening new buffers automatically populates empty slots in the buffer list. Deleting a buffer empties its slot, if it was in one.
+
+The following commands can be mapped to keybinds.
+
 ### `:BPick`
 Type a number to instantly switch to the buffer.
 
