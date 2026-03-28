@@ -52,6 +52,7 @@ endfunction
 
 function! BPick()
     call BPickPrint()
+    echo "Go to:"
     let l:char = getcharstr()
     let l:idx = s:label_to_idx(l:char)
 
@@ -76,8 +77,9 @@ function! BPickSet()
         echo "Invalid buffer type."
         return
     endif
-
+    
     call BPickPrint()
+    echo "Set current buffer to:"
     let l:char = getcharstr()
     let l:target_idx = s:label_to_idx(l:char)
 
@@ -91,6 +93,7 @@ function! BPickSet()
         else
             let g:buf_list[l:target_idx] = l:cur_buf_nr
         endif
+        redraw
     else
         redraw | echo "Cancelled."
     endif
