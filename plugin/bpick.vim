@@ -35,7 +35,6 @@ function! s:is_special_buf(buf_nr)
 endfunction
 
 function! BPickToStr()
-    redraw
     let l:lines = []
     for i in range(5)
         let l:idx_left = i
@@ -53,7 +52,7 @@ function! BPickToStr()
 endfunction
 
 function! BPickPrint()
-    echo join(BPickToStr(), "\n")
+    redraw | echo join(BPickToStr(), "\n")
 endfunction
 
 function! BPickPopup()
@@ -83,7 +82,6 @@ function! BPick()
         if l:buf != 0 && bufexists(l:buf)
             execute 'silent buffer ' . l:buf
             filetype detect
-            redraw
         else
             redraw | echo "Slot empty."
         endif
@@ -126,7 +124,6 @@ function! BPickSet()
         else
             let g:buf_list[l:target_idx] = l:cur_buf_nr
         endif
-        redraw
     else
         redraw | echo "Cancelled."
     endif
