@@ -3,7 +3,7 @@ if exists('g:loaded_bpick')
 endif
 let g:loaded_bpick = 1
 
-let g:buf_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+let s:buf_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 function! s:idx_to_label(idx)
     return (a:idx == 9) ? '0' : string(a:idx + 1)
@@ -40,8 +40,8 @@ function! BPickToStr()
         let l:idx_left = i
         let l:idx_right = i+5
 
-        let l:name_left = s:format_name(g:buf_list[idx_left])
-        let l:name_right = s:format_name(g:buf_list[idx_right])
+        let l:name_left = s:format_name(s:buf_list[idx_left])
+        let l:name_right = s:format_name(s:buf_list[idx_right])
 
         let l:line = printf("%s: %-12.12S | %s: %-12.12S",
                     \ s:idx_to_label(l:idx_left), l:name_left,
@@ -78,7 +78,7 @@ function! BPick()
     let l:idx = s:label_to_idx(l:char)
 
     if l:idx >= 0
-        let l:buf = g:buf_list[l:idx]
+        let l:buf = s:buf_list[l:idx]
         if l:buf != 0 && bufexists(l:buf)
             execute 'silent buffer ' . l:buf
             filetype detect
@@ -115,14 +115,14 @@ function! BPickSet()
     let l:target_idx = s:label_to_idx(l:char)
 
     if l:target_idx >= 0
-        let l:existing_idx = index(g:buf_list, l:cur_buf_nr)
+        let l:existing_idx = index(s:buf_list, l:cur_buf_nr)
 
         if l:existing_idx != -1
-            let l:temp = g:buf_list[l:target_idx]
-            let g:buf_list[l:target_idx] = l:cur_buf_nr
-            let g:buf_list[l:existing_idx] = l:temp
+            let l:temp = s:buf_list[l:target_idx]
+            let s:buf_list[l:target_idx] = l:cur_buf_nr
+            let s:buf_list[l:existing_idx] = l:temp
         else
-            let g:buf_list[l:target_idx] = l:cur_buf_nr
+            let s:buf_list[l:target_idx] = l:cur_buf_nr
         endif
     else
         redraw | echo "Cancelled."
@@ -130,7 +130,7 @@ function! BPickSet()
 endfunction
 
 function! BPickReset()
-    let g:buf_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    let s:buf_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 endfunction
 
 function! s:BPickAutoFill()
@@ -140,15 +140,15 @@ function! s:BPickAutoFill()
         return
     endif
 
-    if index(g:buf_list, l:cur_buf_nr) != -1
+    if index(s:buf_list, l:cur_buf_nr) != -1
         return
     endif
 
     for idx in range(10)
-        let l:val = g:buf_list[idx]
+        let l:val = s:buf_list[idx]
 
         if l:val == 0
-            let g:buf_list[idx] = l:cur_buf_nr
+            let s:buf_list[idx] = l:cur_buf_nr
             return
         endif
     endfor
@@ -156,10 +156,10 @@ endfunction
 
 function! s:BPickAutoDelete()
     let l:buf_nr = str2nr(expand('<abuf>'))
-    let l:idx = index(g:buf_list, l:buf_nr)
+    let l:idx = index(s:buf_list, l:buf_nr)
 
     if l:idx != -1
-        let g:buf_list[l:idx] = 0
+        let s:buf_list[l:idx] = 0
     endif
 endfunction
 
