@@ -71,6 +71,11 @@ function! BPick()
 
     echo "Go to:"
     let l:char = getcharstr()
+
+    if !exists('g:bpick_no_popup')
+        call popup_close(l:pid)
+    endif
+
     let l:idx = s:label_to_idx(l:char)
 
     if l:idx >= 0
@@ -84,10 +89,6 @@ function! BPick()
         endif
     else
         redraw | echo "Cancelled."
-    endif
-
-    if !exists('g:bpick_no_popup')
-        call popup_close(l:pid)
     endif
 endfunction
 
@@ -108,6 +109,11 @@ function! BPickSet()
     
     echo "Set current buffer to:"
     let l:char = getcharstr()
+
+    if !exists('g:bpick_no_popup')
+        call popup_close(l:pid)
+    endif 
+
     let l:target_idx = s:label_to_idx(l:char)
 
     if l:target_idx >= 0
@@ -124,10 +130,6 @@ function! BPickSet()
     else
         redraw | echo "Cancelled."
     endif
-
-    if !exists('g:bpick_no_popup')
-        call popup_close(l:pid)
-    endif 
 endfunction
 
 function! BPickReset()
