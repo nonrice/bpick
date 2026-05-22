@@ -20,7 +20,7 @@ endfunction
 
 function! s:format_name(buf_nr)
     if a:buf_nr == 0 || !bufexists(a:buf_nr)
-        return 'EMPTY'
+        return '-'
     endif
     let l:name = bufname(a:buf_nr)
     return empty(l:name) ? '[No Name]' : fnamemodify(l:name, ':t')
@@ -34,8 +34,9 @@ function! s:is_special_buf(buf_nr)
     return (l:type != '' || l:listed == 0 || empty(l:name))
 endfunction
 
-function! BPickPrint()
+function! BPickToStr()
     redraw
+    let l:lines = []
     for i in range(5)
         let l:idx_left = i
         let l:idx_right = i+5
@@ -43,15 +44,31 @@ function! BPickPrint()
         let l:name_left = s:format_name(g:buf_list[idx_left])
         let l:name_right = s:format_name(g:buf_list[idx_right])
 
-        let l:line = printf("%s -> %-12.12S | %s -> %-12.12S",
+        let l:line = printf("%s: %-12.12S | %s: %-12.12S",
                     \ s:idx_to_label(l:idx_left), l:name_left,
                     \ s:idx_to_label(l:idx_right), l:name_right)
-        echo l:line
+        call add(l:lines, l:line)
     endfor
+    return lines
+endfunction
+
+function! BPickPrint()
+    echo join(BPickToStr(), "\n")
+endfunction
+
+function! BPickPopup()
+    let l:pid = popup_create(BPickToStr(), {})
+    return l:pid
 endfunction
 
 function! BPick()
-    call BPickPrint()
+    if !exists('g:bpick_no_popup')
+        let l:pid = BPickPopup()
+        redraw
+    else
+        call BPickPrint()
+    endif 
+
     echo "Go to:"
     let l:char = getcharstr()
     let l:idx = s:label_to_idx(l:char)
@@ -68,9 +85,20 @@ function! BPick()
     else
         redraw | echo "Cancelled."
     endif
+
+    if !exists('g:bpick_no_popup')
+        call popup_close(l:pid)
+    endif
 endfunction
 
 function! BPickSet()
+    if !exists('g:bpick_no_popup')
+        let l:pid = BPickPopup()
+        redraw
+    else
+        call BPickPrint()
+    endif
+
     let l:cur_buf_nr = bufnr('%')
 
     if s:is_special_buf(cur_buf_nr)
@@ -78,7 +106,6 @@ function! BPickSet()
         return
     endif
     
-    call BPickPrint()
     echo "Set current buffer to:"
     let l:char = getcharstr()
     let l:target_idx = s:label_to_idx(l:char)
@@ -97,6 +124,14 @@ function! BPickSet()
     else
         redraw | echo "Cancelled."
     endif
+
+    if !exists('g:bpick_no_popup')
+        call popup_close(l:pid)
+    endif 
+endfunction
+
+function! BPickReset()
+    let g:buf_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 endfunction
 
 function! s:BPickAutoFill()
@@ -131,6 +166,7 @@ endfunction
 
 command! BPick call BPick()
 command! BPickSet call BPickSet()
+command! BPickReset call BPickReset()
 
 augroup BPickAuto 
     autocmd!
