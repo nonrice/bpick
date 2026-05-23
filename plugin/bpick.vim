@@ -82,6 +82,7 @@ function! BPick()
         if l:buf != 0 && bufexists(l:buf)
             execute 'silent buffer ' . l:buf
             filetype detect
+            redraw
         else
             redraw | echo "Slot empty."
         endif
